@@ -1,0 +1,122 @@
+{% extends 'layout/index.html'%}
+
+{% block title%} 
+	Thêm Sản Phẩm
+{% endblock %}
+
+{% block css %}
+    
+{% endblock %}
+
+
+{% block content %}
+
+<div class="wrapper">
+
+<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+        <section class="content-header">
+          <h1>
+            Thêm Sản Phẩm
+            <small></small>
+          </h1>
+          
+        </section>
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                        <h3 class="alert alert-success">{{ message }}</h3>
+                        {% endif %}
+                        
+                    {% endfor %}
+                {% endif %}
+                <form id="formSubmit" role="form" method="post" action="" enctype="multipart/form-data">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="">Tên Sản Phẩm</label>
+                            <input type="text" name="sanpham" id="sanpham" class="form-control"  placeholder="Nhập Tên Tên Sản Phẩm">
+                            <p class="error"></p>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="">Số Lượng</label>
+                            <input type="number" min="0" value="0" name="soluong" id="soluong" class="form-control"  placeholder="Nhập Số Lượng">
+                            <p class="error"></p>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="">Giá</label>
+                            <input type="number" min="0" value="0" name="gia" id="gia" class="form-control"  placeholder="Nhập giá Sản Phẩm">
+                            <p class="error"></p>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="">Thể Loại Sản Phẩm</label>
+                            <select name="theloai" class="form-control">
+                                {% for cate in cates %}
+                                <option value="{{cate.id}}">{{cate.name}}</option>
+                                {% endfor %}
+                            </select>
+                            
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="">Hình Ảnh </label>
+                            <input type="file" name="hinhanh" id="hinhanh" class="form-control"  placeholder="Nhập Tên Tên Sản Phẩm" required="required" />
+                            <p class="error"></p>
+                        </div>
+                    </div>
+                    {% csrf_token %}
+                    <div class="box-footer">
+                        <button type="submit" class="btn bg-navy btn-flat margin">Thêm</button>
+                    </div>
+                </form>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+    
+    <script>
+      $(function () {
+        $(document).on('submit', '#formSubmit', function(){
+            $('#sanpham+p').html("");
+            $('#soluong+p').html("");
+            $('#gia+p').html("");
+
+            var fl = true;
+            if($('#sanpham').val().length <3 || $('#sanpham').val().length > 32 ){
+                fl = false;
+                $('#sanpham+p').html("Tên Sản Phẩm gồm 3 đến 32 ký tự");
+            }
+
+            if(parseInt($('#soluong').val()) < 0){
+                fl = false;
+                $('#soluong+p').html("Số Lượng phải lớn hơn 0");
+            }
+
+            if(parseInt($('#gia').val()) < 0){
+                fl = false;
+                $('#gia+p').html("Giá phải lớn hơn 0");
+            }
+
+            if(fl == true) $('#formSubmit').submit();
+            return false;
+        });
+      });
+    </script>
+{% endblock %}

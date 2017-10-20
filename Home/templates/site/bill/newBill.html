@@ -1,0 +1,230 @@
+{% extends 'layout/index.html'%}
+
+{% block title%} 
+	Lập Đơn Hàng
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/jAlert.css">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="wrapper">
+
+<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+        <section class="content-header">
+          <h1>
+            Lập Đơn Hàng
+          </h1>
+          
+        </section>
+
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+              {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == "success" %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endif %}
+
+                    {% if message.tags == "error" %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% endif %}
+
+                {% endfor %}
+              {% endif %}
+            <div class="col-xs-8">
+
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title" >Chọn Sản Phẩm</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+					<div class="form">
+							<div class="col-xs-3" style="padding:0px; margin-bottom:10px">
+									Số Lượng: <input class="form-control" type="number" min="1" value="1" name="soluong" id="soluong" placeholder="Nhập Số Lượng" />
+							</div>
+							
+							<input class="form-control" type="text" name="sanpham" id="sanpham" placeholder="Chọn Sản Phẩm" />
+						{% csrf_token %}
+					</div>
+					<div id="result">
+						
+					</div>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+            <div class="col-xs-4">    
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title" >Thông Tin Cá Nhân</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+					<div class="formInfo">
+						<form id="formInfo" role="form" method="post" action="/bill/dathang.html" enctype="multipart/form-data">
+							<div class="box-body">
+								<div class="form-group">
+									<label for="">Tên Khách Hàng</label>
+									<input type="text" name="name" id="name" class="form-control" placeholder="Nhập Tên Khách Hàng">
+									<p class="error"></p>
+								</div>
+								<div class="form-group">
+									<label for="">Số Điện Thoại</label>
+									<input type="text" name="sdt" id="sdt" class="form-control" placeholder="Nhập Số điện thoại">
+									<p class="error"></p>
+								</div>
+								<div class="form-group">
+									<label for="">Địa Chỉ</label>
+									<input type="text" name="diachi" id="diachi" class="form-control" placeholder="Nhập địa chỉ nhận hàng">
+									<p class="error"></p>
+									{% csrf_token %}
+								</div>
+								<div class="box-footer">
+									<button type="submit" class="btn bg-navy btn-flat margin">Đặt hàng</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div><!-- /.box-body -->
+				<div id="infoBill">
+					<div class="box-header">
+						<h3 class="box-title" >Thông Tin Sản Phẩm</h3>
+					</div><!-- /.box-header -->
+					<div class="box-body" id="resultSession">
+							
+					</div>
+				</div>
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script src="/static/js/jAlert.js" ></script>
+    <script>
+        $(function () {
+            $('body').addClass('sidebar-collapse');
+
+            $('input#sanpham').focus(() =>{	
+                $('div#result').css('display', 'block').fadeIn(1000);
+                getOerder();
+            });
+
+            // $('input#sanpham').focusout(() =>{	
+            //     $('div#result').css('display', 'none').fadeOut(5000);
+            // });
+            
+            $('input#sanpham').keyup(() =>{
+                getOerder();
+            });
+
+            function getOerder(){
+                var val = $('input#sanpham').val();
+                var soluong = 1;
+                if($('input#soluong').val() > 1) soluong = $('input#soluong').val();
+
+                var token = $('input[name=csrfmiddlewaretoken]').val();
+                $.post(
+                    '/bill/ajaxGetOrder',
+                    {
+                        name  				: val,
+                        soluong 			: soluong,
+                        csrfmiddlewaretoken	: token
+                    },function(data){
+                        $('div#result').html(data);
+                    }
+                );
+            }
+
+            $(document).on('click', 'div.item', function(){
+                var token = $('input[name=csrfmiddlewaretoken]').val();
+                var soluong = 1;
+                if($('input#soluong').val() > 1) soluong = $('input#soluong').val();
+                var id = $(this).attr('st');
+               
+                $.post(
+                    '/bill/ajaxLapBill',
+                    {
+                        id  				: id,
+                        soluong 			: soluong,
+                        csrfmiddlewaretoken	: token
+                    },function(data){
+                        if(data.st == 0) jAlert(data.mess, "red", true);
+                        else if(data.st == 1) getSession();
+                    },'json'
+                );
+
+            });
+
+            function getSession(){
+                var token = $('input[name=csrfmiddlewaretoken]').val();
+                $.post(
+                    '/bill/getSession',
+                    {
+                        csrfmiddlewaretoken	: token
+                    },function(data){
+                        $('div#resultSession').html(data);
+                    }
+                );
+            }
+            
+            $(document).on('click', '.delSession', function(){
+                var id = $(this).attr('st');
+                var token = $('input[name=csrfmiddlewaretoken]').val();
+                $.post(
+                    '/bill/ajaxDelBill',
+                    {
+                        id  				: id,
+                        csrfmiddlewaretoken	: token
+                    },function(data){
+                        if(data.st == 0) jAlert(data.mess, "red", true);
+                        else if(data.st == 1){  
+                            getSession();
+                            jAlert(data.mess, "green", true);
+                        }
+                    },'json'
+                );
+            });
+            
+            $(document).on('submit', 'form#formInfo', function(){
+                var fl = true;
+                $('#name+p').html("");
+                $('#sdt+p').html("");
+                $('#diachi+p').html("");
+
+                var name = $('#name').val();
+                if( (name.length > 0 && name.length <3) || name.length >32){
+                    fl = false;
+                    $('#name+p').html("Tên Khách hàng gồm 3 đến 32 ký tự");
+                }
+
+                var sdt = $('#sdt').val();
+                var filter = /^[0-9-+]+$/;
+                if(sdt.length >0 && (!filter.test(sdt) || sdt.length < 9 || sdt.length >10)){
+                    fl = false;
+                    $('#sdt+p').html("Số Điện thoại không đúng định dạng");
+                }
+
+                var diachi = $('#diachi').val();
+                if( (diachi.length > 0 && diachi.length <3)){
+                    fl = false;
+                    $('#diachi+p').html("Địa chỉ quá ngắn");
+                }
+                if(fl == true) $('form#formInfo').submit();
+                return false;
+            });
+
+        });
+    </script>
+{% endblock %}

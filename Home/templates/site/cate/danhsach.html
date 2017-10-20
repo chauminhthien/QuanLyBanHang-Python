@@ -1,0 +1,110 @@
+{% extends 'layout/index.html'%}
+
+{% block title%} 
+	Trang Chủ
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="wrapper">
+
+<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+        <section class="content-header">
+          <h1>
+            Danh Sách Thể Loại
+            <small></small>
+          </h1>
+          
+        </section>
+
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+
+              <div class="box">
+                <div class="box-header">
+                <h3 class="box-title" >Data Table With Full Features</h3>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                            <div class="alert alert-success">{{ message }}</div>
+                        {% endif %}
+
+                        {% if message.tags == "error" %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endif %}
+
+                    {% endfor %}
+                {% endif %}
+
+
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                <a href="/the-loai/them-cate.html" class="btn bg-navy btn-flat margin"><i class="fa fa-plus" > Thêm Thể Loại</i></a>
+
+                  <table id="data" class="table table-bordered table-striped">
+
+                    <thead>
+                      <tr>
+                        <th>Tên Thể Loại </th>
+                        <th>Xử Lý </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                            
+                    {% if cates %}
+                            {% for  cate in cates %}
+                            <tr>
+                                
+                                <td>
+                                    {{ cate.name}}
+                                </td>
+                                <td>
+                                    <a href="/the-loai/sua-the-loai/{{ cate.id }} " class="btn bg-navy btn-flat margin"><i class="fa fa-pencil-square-o" >&nbsp;Edit</i></a>
+                                    <a href="/the-loai/xoa/{{ cate.id }} " class="btn bg-navy btn-flat margin"><i class="fa fa-times" >&nbsp;Delete </i></a> 
+                                </td>
+                            </tr>
+                            
+                            {% endfor %}
+                    {% endif %}
+                    
+                    </tbody>
+                  </table>
+
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+      $(function () {
+        $('#data').DataTable({
+          "paging": true,
+          "lengthChange": true,
+          "searching": true,
+          "ordering": true,
+          "info": true,
+          "autoWidth": true
+        });
+      });
+    </script>
+{% endblock %}

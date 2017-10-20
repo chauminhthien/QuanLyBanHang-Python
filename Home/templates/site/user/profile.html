@@ -1,0 +1,118 @@
+{% extends 'layout/index.html'%}
+
+{% block title%} 
+	Trang Chủ
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="wrapper">
+
+<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+        <section class="content-header">
+          <h1>
+            Tài Khoảng: 
+            <small> {{user.fullname}}</small>
+          </h1>
+          
+        </section>
+
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                            <h3 class="alert alert-success alert-dismissable">{{ message }}</h3>
+                        {% endif %}
+
+                        {% if message.tags == "error" %}
+                            <h3 class="alert alert-danger alert-dismissable">{{ message }}</h3>
+                        {% endif %}
+
+                    {% endfor %}
+                {% endif %}
+            <div class="col-xs-12">
+                <div class="col-md-4">
+                    <div class="user top">
+                        <img src="/static/upload/user/{{user.img}}" alt="{{user.fullname}}" class="img-responsive">
+                    </div>
+                    <div class="user bottom">
+                        <form action="/user/upload.html" method="post" enctype="multipart/form-data">
+                            <input type="file" name="avatar" required="required" />
+                            {% csrf_token %}
+                            <div class="">
+                                <button type="submit" class="btn bg-navy btn-flat margin">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Thông tin Cá Nhân</h3>
+                        </div><!-- /.box-header -->
+                        <!-- form start -->
+                        <form role="form" method="post" id="formInfo">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label for="">Email address</label>
+                                    <input type="email" class="form-control" disabled value="{{user.email}}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Fullname</label>
+                                    <input type="text" id="fullname" name="fullname" class="form-control" value="{{user.fullname}}">
+                                    <p class="error"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">PassWord</label>
+                                    <input type="password" id="password" name="password" class="form-control" placeholder="Nhập Password">
+                                    <p class="error"></p>
+                                </div>
+                                {% csrf_token %}
+                            </div>
+                            <div class="box-footer">
+                                <button type="submit" class="btn bg-navy btn-flat margin">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+      $(function () {
+        $(document).on('submit', '#formInfo', function(){
+            var fl = true;
+            $('#fullname+p').html('');
+            $('#password+p').html('');
+
+            if( $('#fullname').val().length < 3 || $('#fullname').val().length >32 ){
+                fl = false;
+                $('#fullname+p').html('Tên Của bạn gồm 3 đến 32 ký tự');
+            }
+            if( ($('#password').val().length < 3 && $('#password').val().length >0) || $('#password').val().length >32 ){
+                fl = false;
+                $('#password+p').html('PassWord Của bạn gồm 3 đến 32 ký tự');
+            }
+            if(fl ==  true) $('#formInfo').submit();
+            return false;
+        });
+      });
+    </script>
+{% endblock %}

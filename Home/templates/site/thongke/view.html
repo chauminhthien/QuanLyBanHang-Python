@@ -1,0 +1,113 @@
+{% extends 'layout/index.html'%}
+
+{% block title%} 
+	Xem Đơn Hàng
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="wrapper">
+
+<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+        <section class="content-header">
+          <h1>
+            Danh sách Sản Phẩm Hết Hàng
+            <small></small>
+          </h1>
+          
+        </section>
+
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+
+              <div class="box">
+                <div class="box-header">
+                <h3 class="box-title" >Danh sách Sản Phẩm Hết Hàng</h3>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                            <div class="alert alert-success alert-dismissable">{{ message }}</div>
+                        {% endif %}
+
+                        {% if message.tags == "error" %}
+                            <div class="alert alert-danger alert-dismissable">{{ message }}</div>
+                        {% endif %}
+
+                    {% endfor %}
+                {% endif %}
+
+
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                  <table id="data" class="table table-bordered table-striped">
+
+                    <thead>
+                      <tr>
+                        <th>Tên Hàng</th>
+                        <th>Hình Ảnh</th>
+                        <th>Số Lượng</th>
+                        <th>Giá</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                            
+                    {% if donHang %}
+                            {% for dh in donHang %}
+                            <tr>
+                                <td>
+                                    {{ dh.product.name}}
+                                </td>
+                                <td>
+                                    <img width="100px" src="/static/upload/product/{{ dh.product.hinh}}" alt="{{ dh.product.name}}">
+                                </td>
+                                <td>
+                                        {{ dh.soluong}}
+                                </td>
+                                <td>
+                                        {{ dh.product.gia}}
+                                </td>
+                            </tr>
+                            
+                            {% endfor %}
+                    {% endif %}
+                    </tbody>
+                  </table>
+                  <h1> <strong>Tồng Tiền</strong> {{tien}}đ</h1>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+      $(function () {
+        $('#data').DataTable({
+          "paging": true,
+          "lengthChange": true,
+          "searching": true,
+          "ordering": true,
+          "info": true,
+          "autoWidth": true
+        });
+      });
+    </script>
+{% endblock %}

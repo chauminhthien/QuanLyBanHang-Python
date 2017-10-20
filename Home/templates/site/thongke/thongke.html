@@ -1,0 +1,133 @@
+{% extends 'layout/index.html'%}
+
+{% block title%} 
+	Danh sách Sản Phẩm Hết Hàng
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="wrapper">
+
+<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+        <section class="content-header">
+          <h1>
+            Danh sách Sản Phẩm Hết Hàng
+            <small></small>
+          </h1>
+          
+        </section>
+
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+
+              <div class="box">
+                <div class="box-header">
+                <h3 class="box-title" >Danh sách Sản Phẩm Hết Hàng</h3>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                            <div class="alert alert-success alert-dismissable">{{ message }}</div>
+                        {% endif %}
+
+                        {% if message.tags == "error" %}
+                            <hdiv3 class="alert alert-danger alert-dismissable">{{ message }}</div>
+                        {% endif %}
+
+                    {% endfor %}
+                {% endif %}
+
+
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                <a target="_blank" href="/thong-ke/export-don-hang.html" class="btn bg-navy btn-flat margin"><i class="fa fa-plus" > Export Data to CSV File</i></a>
+
+                  <table id="data" class="table table-bordered table-striped">
+
+                    <thead>
+                      <tr>
+                        <th>Tên Khách Hàng</th>
+                        <th>Địa Chỉ</th>
+                        <th>SĐT</th>
+                        <th>Tổng Tiền</th>
+                        <th>Xử Lý</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                            
+                    {% if donhangs %}
+                            {% for dh in donhangs %}
+                            <tr>
+                                <td>
+                                    {%if dh.name == "" %}
+                                        Khách giảng lai
+                                    {%else%}
+                                        {{ dh.name}}
+                                    {%endif%}
+                                    
+                                </td>
+                                <td>
+                                    {%if dh.diachi == "" %}
+                                        Khách giảng lai
+                                    {%else%}
+                                        {{ dh.diachi}}
+                                    {%endif%}
+                                </td>
+                                <td>
+                                    {%if dh.sdt == "" %}
+                                        Khách giảng lai
+                                    {%else%}
+                                        {{ dh.sdt}}
+                                    {%endif%}
+                                </td>
+                                <td>
+                                    {{ dh.tien}}
+                                </td>
+                                <td>
+                                    <a target="_blank" href="/thong-ke/view/{{ dh.id }} " class="btn bg-navy btn-flat margin"><i class="fa fa-check-circle-o" >&nbsp;Xem Đơn Hàng </i></a> 
+                                </td>
+                            </tr>
+                            
+                            {% endfor %}
+                    {% endif %}
+                    
+                    </tbody>
+                  </table>
+
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+      $(function () {
+        $('#data').DataTable({
+          "paging": true,
+          "lengthChange": true,
+          "searching": true,
+          "ordering": true,
+          "info": true,
+          "autoWidth": true
+        });
+      });
+    </script>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'layout/index.html'%}
+
+{% block title%} 
+	Trang Chủ
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="wrapper">
+
+<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+        <section class="content-header">
+          <h1>
+            Thêm Thể Loại
+            <small></small>
+          </h1>
+          
+        </section>
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                        <h3 class="alert alert-success">{{ message }}</h3>
+                        {% endif %}
+                        
+                    {% endfor %}
+                {% endif %}
+                {% if cate %}
+                <form id="formSubmit" role="form" method="post" action="">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Tên Thể Loại</label>
+                            <input type="text" name="theloai" id="theloai" class="form-control"  value="{{cate.name}}">
+                            <p class="error"></p>
+                        </div>
+                    </div>
+                    {% csrf_token %}
+                    <div class="box-footer">
+                        <button type="submit" class="btn bg-navy btn-flat margin">Thêm</button>
+                    </div>
+                </form>
+                {% endif %}
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+      $(function () {
+        $(document).on('submit', '#formSubmit', function(){
+            $('#theloai+p').html("");
+            var fl = true;
+            if($('#theloai').val().length <3 || $('#theloai').val().length > 32 ){
+                fl = false;
+                $('#theloai+p').html("Tên Thể loại gồm 3 đến 32 ký tự");
+            }
+
+            if(fl == true) $('#formSubmit').submit();
+            return false;
+        });
+      });
+    </script>
+{% endblock %}
